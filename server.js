@@ -1,26 +1,33 @@
 const express = require('express');
 const compression = require('compression');
-const { getJobData, getJobSchema, TOTAL_JOBS, jobTitles, companies, canadaLocations, industries } = require('./jobData');
+const { getJobData, getJobSchema, TOTAL_JOBS, jobTitles, companies, deLocations, industries } = require('./jobData');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(compression());
-app.use(express.static(__dirname)); // ✅ This serves apply-now.html
+app.use(express.static(__dirname));
 app.use(express.static('public'));
+
+// ─── GET BASE URL ──────────────────────────────────────────────────────────
+function getBaseUrl(req) {
+  const protocol = req.headers['x-forwarded-proto'] || 'https';
+  const host = req.headers['x-forwarded-host'] || req.headers.host || 'localhost:3000';
+  return `${protocol}://${host}`;
+}
 
 // ─── AD CONFIGURATION ──────────────────────────────────────────────────────────
 const AD_SCRIPT = `
 <script>
   atOptions = {
-    'key' : '72b6f3ac3fc2f43722e5f2196ef85add',
+    'key' : '52f2121fe372a34db4a66c66482eec90',
     'format' : 'iframe',
     'height' : 90,
     'width' : 728,
     'params' : {}
   };
 </script>
-<script src="https://www.highperformanceformat.com/72b6f3ac3fc2f43722e5f2196ef85add/invoke.js"></script>
+<script src="https://www.highperformanceformat.com/52f2121fe372a34db4a66c66482eec90/invoke.js"></script>
 `;
 
 const AD_TOP = `
@@ -41,20 +48,17 @@ const AD_BOTTOM = `
 </div>
 `;
 
-// ─── AD CONFIGURATION ──────────────────────────────────────────────────────────
-
-
-
-// ── Helpers ──────────────────────────────────────────────────────────────────
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
 const JOBS_PER_PAGE = 20;
 
 function renderHTML({ title, meta, bodyContent, schema }) {
   return `<!DOCTYPE html>
-<html lang="en">
+<html lang="de">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<meta name="google-site-verification" content="f_swjSKQxA8Dye1qCFyBXzBnhlnmJ2vPjFOPiLsvIvo" />
+<meta name="google-site-verification" content="caV8L_sobLIVDDbS_WFYoT7SftALcyf5h0wkWyxKkmY" />
+<meta name="google-site-verification" content="XrH9c03tsqCVBwOX4DzHrmE5fqKcvaidkRTE3cD1A2g" />
 <title>${title}</title>
 <meta name="description" content="${meta}"/>
 <meta property="og:title" content="${title}"/>
@@ -66,35 +70,35 @@ ${schema ? `<script type="application/ld+json">${JSON.stringify(schema, null, 2)
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f5f5f5;color:#222;line-height:1.6}
 a{color:inherit;text-decoration:none}
 /* NAV */
-nav{background:#d62828;color:#fff;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
+nav{background:#DD0000;color:#fff;padding:0 1.5rem;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
 nav .brand{font-size:1.25rem;font-weight:700;color:#fff}
-nav .brand span{color:#ffd700}
+nav .brand span{color:#FFD700}
 nav .nav-links{display:flex;gap:1.5rem;font-size:0.85rem}
 nav .nav-links a{color:rgba(255,255,255,0.8);transition:color .2s}
-nav .nav-links a:hover{color:#ffd700}
+nav .nav-links a:hover{color:#FFD700}
 /* HERO */
-.hero{background:linear-gradient(135deg,#d62828 0%,#a01c1c 50%,#6b1212 100%);color:#fff;padding:3rem 1.5rem;text-align:center}
+.hero{background:linear-gradient(135deg,#DD0000 0%,#b30000 50%,#8a0000 100%);color:#fff;padding:3rem 1.5rem;text-align:center}
 .hero h1{font-size:clamp(1.6rem,4vw,2.8rem);font-weight:800;margin-bottom:.75rem}
-.hero h1 .accent{color:#ffd700}
+.hero h1 .accent{color:#FFD700}
 .hero p{font-size:1rem;opacity:.85;margin-bottom:1.5rem;max-width:600px;margin-left:auto;margin-right:auto}
 .stat-bar{display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;margin-top:1.5rem}
-.stat{text-align:center}.stat strong{display:block;font-size:1.5rem;color:#ffd700}
+.stat{text-align:center}.stat strong{display:block;font-size:1.5rem;color:#FFD700}
 .stat span{font-size:.8rem;opacity:.75}
 /* SEARCH */
 .search-bar{background:#fff;padding:1.25rem 1.5rem;border-bottom:1px solid #e0e0e0;display:flex;gap:.75rem;flex-wrap:wrap;max-width:960px;margin:0 auto}
 .search-bar input,.search-bar select{flex:1;min-width:160px;padding:.6rem .9rem;border:1.5px solid #d0d0d0;border-radius:8px;font-size:.9rem;outline:none}
-.search-bar input:focus,.search-bar select:focus{border-color:#d62828}
-.search-bar button{padding:.6rem 1.4rem;background:#ffd700;color:#1a1a2e;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:.9rem}
+.search-bar input:focus,.search-bar select:focus{border-color:#DD0000}
+.search-bar button{padding:.6rem 1.4rem;background:#FFD700;color:#1a1a2e;border:none;border-radius:8px;cursor:pointer;font-weight:700;font-size:.9rem}
 /* FILTERS */
 .filter-row{background:#fff;border-bottom:1px solid #ebebeb;padding:.6rem 1.5rem;display:flex;gap:.5rem;flex-wrap:wrap;max-width:960px;margin:0 auto}
 .filter-chip{padding:.35rem .85rem;border:1.5px solid #d0d0d0;border-radius:20px;font-size:.78rem;cursor:pointer;background:#fff;transition:all .2s;white-space:nowrap}
-.filter-chip.active,.filter-chip:hover{background:#d62828;color:#fff;border-color:#d62828}
+.filter-chip.active,.filter-chip:hover{background:#DD0000;color:#fff;border-color:#DD0000}
 /* LAYOUT */
 .container{max-width:960px;margin:0 auto;padding:1.5rem}
 .page-grid{display:grid;grid-template-columns:1fr;gap:1rem}
 /* JOB CARD */
 .job-card{background:#fff;border-radius:12px;padding:1.25rem 1.5rem;border:1.5px solid #e8e8e8;transition:border-color .2s,transform .15s;display:flex;flex-direction:column;gap:.75rem}
-.job-card:hover{border-color:#d62828;transform:translateY(-2px)}
+.job-card:hover{border-color:#DD0000;transform:translateY(-2px)}
 .card-header{display:flex;justify-content:space-between;align-items:flex-start;gap:1rem;flex-wrap:wrap}
 .card-title{font-size:1.05rem;font-weight:700;color:#1a1a2e;margin-bottom:.2rem}
 .card-company{font-size:.88rem;color:#555}
@@ -109,8 +113,8 @@ nav .nav-links a:hover{color:#ffd700}
 .card-desc{font-size:.85rem;color:#555;line-height:1.6;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .card-footer{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:.5rem}
 .card-salary{font-weight:700;color:#1a1a2e;font-size:.9rem}
-.btn-apply{padding:.55rem 1.3rem;background:#d62828;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.85rem;cursor:pointer;transition:background .2s}
-.btn-apply:hover{background:#a01c1c}
+.btn-apply{padding:.55rem 1.3rem;background:#DD0000;color:#fff;border:none;border-radius:8px;font-weight:700;font-size:.85rem;cursor:pointer;transition:background .2s}
+.btn-apply:hover{background:#b30000}
 /* JOB DETAIL */
 .job-detail{background:#fff;border-radius:12px;padding:2rem;border:1.5px solid #e8e8e8}
 .job-detail h1{font-size:1.6rem;font-weight:800;color:#1a1a2e;margin-bottom:.5rem}
@@ -121,30 +125,30 @@ nav .nav-links a:hover{color:#ffd700}
 .apply-section{background:#f9f9f9;border-radius:12px;padding:1.5rem;text-align:center;border:1.5px dashed #e0e0e0}
 .apply-section h3{margin-bottom:.5rem;color:#1a1a2e}
 .apply-section p{font-size:.85rem;color:#666;margin-bottom:1rem}
-.btn-apply-big{padding:.85rem 2.5rem;background:#d62828;color:#fff;border:none;border-radius:10px;font-weight:700;font-size:1rem;cursor:pointer;transition:background .2s}
-.btn-apply-big:hover{background:#a01c1c}
+.btn-apply-big{padding:.85rem 2.5rem;background:#DD0000;color:#fff;border:none;border-radius:10px;font-weight:700;font-size:1rem;cursor:pointer;transition:background .2s}
+.btn-apply-big:hover{background:#b30000}
 /* PAGINATION */
 .pagination{display:flex;justify-content:center;gap:.4rem;margin:2rem 0;flex-wrap:wrap}
 .pagination a,.pagination span{padding:.5rem .9rem;border-radius:8px;border:1.5px solid #e0e0e0;font-size:.85rem;background:#fff}
-.pagination a:hover{border-color:#d62828;color:#d62828}
-.pagination .current{background:#d62828;color:#fff;border-color:#d62828}
+.pagination a:hover{border-color:#DD0000;color:#DD0000}
+.pagination .current{background:#DD0000;color:#fff;border-color:#DD0000}
 /* BREADCRUMB */
 .breadcrumb{font-size:.82rem;color:#888;margin-bottom:1rem}
-.breadcrumb a{color:#d62828}
+.breadcrumb a{color:#DD0000}
 /* SITEMAP NOTE */
-.info-box{background:#fff;border-radius:12px;padding:1.25rem 1.5rem;border-left:4px solid #d62828;margin-bottom:1rem;font-size:.88rem}
+.info-box{background:#fff;border-radius:12px;padding:1.25rem 1.5rem;border-left:4px solid #DD0000;margin-bottom:1rem;font-size:.88rem}
 /* FOOTER */
 footer{background:#1a1a2e;color:rgba(255,255,255,0.7);text-align:center;padding:1.5rem;font-size:.82rem;margin-top:3rem}
-footer a{color:#ffd700}
+footer a{color:#FFD700}
 /* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:999;align-items:center;justify-content:center}
 .modal-overlay.open{display:flex}
 .modal{background:#fff;border-radius:16px;padding:2rem;max-width:480px;width:90%;position:relative}
 .modal h2{font-size:1.2rem;font-weight:700;margin-bottom:1rem;color:#1a1a2e}
 .modal input{width:100%;padding:.7rem;border:1.5px solid #ddd;border-radius:8px;font-size:.9rem;margin-bottom:.85rem;outline:none}
-.modal input:focus{border-color:#d62828}
-.modal .btn-submit{width:100%;padding:.75rem;background:#d62828;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.95rem}
-.modal .btn-submit:hover{background:#a01c1c}
+.modal input:focus{border-color:#DD0000}
+.modal .btn-submit{width:100%;padding:.75rem;background:#DD0000;color:#fff;border:none;border-radius:8px;font-weight:700;cursor:pointer;font-size:.95rem}
+.modal .btn-submit:hover{background:#b30000}
 .modal .close-btn{position:absolute;top:1rem;right:1rem;background:none;border:none;font-size:1.4rem;cursor:pointer;color:#888}
 .success-msg{display:none;text-align:center;padding:1rem;color:#2e7d32;font-weight:600}
 @media(max-width:600px){.search-bar{flex-direction:column}.stat-bar{gap:1rem}}
@@ -154,7 +158,7 @@ footer a{color:#ffd700}
 <body>
 ${AD_TOP}
 <nav>
-  <a class="brand" href="/"><span>CA</span>NOVA<span>.ca</span></a>
+  <a class="brand" href="/"><span>DE</span>Jobs<span>.de</span></a>
   <div class="nav-links">
     <a href="/">Home</a>
     <a href="/jobs">Browse Jobs</a>
@@ -167,25 +171,25 @@ ${AD_TOP}
     <div>
 <script>
   atOptions = {
-    'key' : 'd1b072857c7132ec474a48b3413701e2',
+    'key' : 'ca3349d75612b6053048b6ed52e67010',
     'format' : 'iframe',
     'height' : 60,
     'width' : 468,
     'params' : {}
   };
 </script>
-<script src="https://www.highperformanceformat.com/d1b072857c7132ec474a48b3413701e2/invoke.js"></script>
+<script src="https://www.highperformanceformat.com/ca3349d75612b6053048b6ed52e67010/invoke.js"></script>
 </div>
 </div>
 ${bodyContent}
 ${AD_BOTTOM}
 <footer>
-  &copy; 2025 CANOVA.ca — <strong>100,000 Jobs</strong> across Canada |
+  &copy; 2025 DEJobs.de — <strong>100,000 Jobs</strong> across Germany |
   <a href="/jobs">Browse All</a> · <a href="/jobs?type=remote">Remote Jobs</a> · <a href="/sitemap">Sitemap</a>
 </footer>
 <script>
 function openApply(title){
-  window.location.href='https://rightwing-production.up.railway.app/apply-now.html';
+  window.location.href='https://dejobs-production.up.railway.app/apply-now.html';
 }
 </script>
 </body>
@@ -194,6 +198,7 @@ function openApply(title){
 
 // ── HOME PAGE ─────────────────────────────────────────────────────────────────
 app.get('/', (req, res) => {
+  const baseUrl = getBaseUrl(req);
   const featuredIds = [1, 50001, 2, 50002, 3, 50003, 10000, 60000];
   const featuredJobs = featuredIds.map(id => getJobData(id));
 
@@ -226,55 +231,55 @@ app.get('/', (req, res) => {
   const websiteSchema = {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    "name": "CANOVA.ca",
-    "url": "https://rightwing-production.up.railway.app",
-    "description": "Canada's largest job portal with 100,000 job listings — remote and on-site across all provinces",
+    "name": "DEJobs.de",
+    "url": baseUrl,
+    "description": "Germany's largest job portal with 100,000 job listings — remote and on-site across all 16 states",
     "potentialAction": {
       "@type": "SearchAction",
-      "target": "https://rightwing-production.up.railway.app/jobs?q={search_term_string}",
+      "target": `${baseUrl}/jobs?q={search_term_string}`,
       "query-input": "required name=search_term_string"
     }
   };
 
   const body = `
 <div class="hero">
-  <h1>Find Your Dream Job in <span class="accent">Canada</span></h1>
-  <p>100,000 verified job listings — remote & on-site — across all 13 provinces & territories</p>
+  <h1>Finde deinen Traumjob in <span class="accent">Deutschland</span></h1>
+  <p>100,000 verifizierte Stellenangebote — remote & vor Ort — in allen 16 Bundesländern</p>
   <form action="/jobs" method="get" style="display:flex;gap:.75rem;max-width:580px;margin:0 auto;flex-wrap:wrap">
-    <input name="q" type="text" placeholder="Job title, skill, or company..." style="flex:2;min-width:200px;padding:.7rem 1rem;border-radius:8px;border:none;font-size:.95rem"/>
+    <input name="q" type="text" placeholder="Jobtitel, Fähigkeit oder Unternehmen..." style="flex:2;min-width:200px;padding:.7rem 1rem;border-radius:8px;border:none;font-size:.95rem"/>
     <select name="location" style="flex:1;min-width:140px;padding:.7rem;border-radius:8px;border:none;font-size:.85rem">
-      <option value="">All Provinces</option>
-      <option value="remote">Remote Only</option>
-      <option value="ontario">Ontario</option>
-      <option value="britishcolumbia">British Columbia</option>
-      <option value="alberta">Alberta</option>
+      <option value="">Alle Bundesländer</option>
+      <option value="remote">Nur Remote</option>
+      <option value="berlin">Berlin</option>
+      <option value="bayern">Bayern</option>
+      <option value="nrw">Nordrhein-Westfalen</option>
     </select>
-    <button type="submit" style="padding:.7rem 1.5rem;background:#ffd700;color:#1a1a2e;border:none;border-radius:8px;font-weight:700;cursor:pointer">Search →</button>
+    <button type="submit" style="padding:.7rem 1.5rem;background:#FFD700;color:#1a1a2e;border:none;border-radius:8px;font-weight:700;cursor:pointer">Suchen →</button>
   </form>
   <div class="stat-bar">
-    <div class="stat"><strong>100,000</strong><span>Total Jobs</span></div>
+    <div class="stat"><strong>100,000</strong><span>Jobs insgesamt</span></div>
     <div class="stat"><strong>50,000</strong><span>Remote Jobs</span></div>
-    <div class="stat"><strong>50,000</strong><span>On-site Jobs</span></div>
-    <div class="stat"><strong>13</strong><span>Provinces/Territories</span></div>
-    <div class="stat"><strong>100+</strong><span>Companies</span></div>
+    <div class="stat"><strong>50,000</strong><span>Vor Ort Jobs</span></div>
+    <div class="stat"><strong>16</strong><span>Bundesländer</span></div>
+    <div class="stat"><strong>100+</strong><span>Unternehmen</span></div>
   </div>
 </div>
 
 <div class="container">
   <div class="info-box">
-    🇨🇦 Canada's most comprehensive job board — browse <strong>50,000 remote jobs</strong> and <strong>50,000 on-site jobs</strong> across all industries.
+    🇩🇪 Deutschlands umfassendste Jobbörse — entdecke <strong>50,000 Remote-Jobs</strong> und <strong>50,000 Vor-Ort-Jobs</strong> in allen Branchen.
   </div>
    ${AD_MIDDLE}
-  <h2 style="margin-bottom:1rem;font-size:1.2rem">Featured Jobs</h2>
+  <h2 style="margin-bottom:1rem;font-size:1.2rem">Empfohlene Jobs</h2>
   <div class="page-grid">${cards}</div>
   <div style="text-align:center;margin-top:2rem">
-    <a href="/jobs" style="display:inline-block;padding:.85rem 2.5rem;background:#1a1a2e;color:#fff;border-radius:10px;font-weight:700">Browse All 100,000 Jobs →</a>
+    <a href="/jobs" style="display:inline-block;padding:.85rem 2.5rem;background:#1a1a2e;color:#fff;border-radius:10px;font-weight:700">Alle 100,000 Jobs durchsuchen →</a>
   </div>
 </div>`;
 
   res.send(renderHTML({
-    title: 'CANOVA.ca — 100,000 Jobs in Canada | Remote & On-site',
-    meta: 'Find your next job in Canada. 100,000 verified listings — 50,000 remote and 50,000 on-site jobs across all 13 provinces and territories.',
+    title: 'DEJobs.de — 100,000 Jobs in Deutschland | Remote & Vor Ort',
+    meta: 'Finde deinen nächsten Job in Deutschland. 100,000 verifizierte Stellenangebote — 50,000 remote und 50,000 vor Ort in allen 16 Bundesländern.',
     bodyContent: body,
     schema: websiteSchema
   }));
@@ -311,7 +316,7 @@ app.get('/jobs', (req, res) => {
       <div class="card-company">${job.company}</div>
     </div>
     <div class="card-badges">
-      <span class="badge ${job.isRemote ? 'badge-remote' : 'badge-office'}">${job.isRemote ? '🌐 Remote' : '🏢 On-site'}</span>
+      <span class="badge ${job.isRemote ? 'badge-remote' : 'badge-office'}">${job.isRemote ? '🌐 Remote' : '🏢 Vor Ort'}</span>
       <span class="badge badge-type">${job.jobType}</span>
       <span class="badge badge-exp">${job.experience}</span>
     </div>
@@ -344,13 +349,13 @@ app.get('/jobs', (req, res) => {
 
   const body = `
 <div class="hero" style="padding:1.75rem 1.5rem">
-  <h1 style="font-size:1.8rem">Browse <span class="accent">100,000 Jobs</span> in Canada</h1>
-  <p>Showing page ${page.toLocaleString()} of ${totalPages.toLocaleString()}</p>
+  <h1 style="font-size:1.8rem">Durchsuche <span class="accent">100,000 Jobs</span> in Deutschland</h1>
+  <p>Seite ${page.toLocaleString()} von ${totalPages.toLocaleString()}</p>
 </div>
 <div class="filter-row">
-  <a href="/jobs"><span class="filter-chip ${typeFilter==='all'?'active':''}">All Jobs (100,000)</span></a>
+  <a href="/jobs"><span class="filter-chip ${typeFilter==='all'?'active':''}">Alle Jobs (100,000)</span></a>
   <a href="/jobs?type=remote"><span class="filter-chip ${typeFilter==='remote'?'active':''}">🌐 Remote (50,000)</span></a>
-  <a href="/jobs?type=onsite"><span class="filter-chip ${typeFilter==='onsite'?'active':''}">🏢 On-site (50,000)</span></a>
+  <a href="/jobs?type=onsite"><span class="filter-chip ${typeFilter==='onsite'?'active':''}">🏢 Vor Ort (50,000)</span></a>
 </div>
 <div class="container">
   <div class="page-grid">${cards}</div>
@@ -358,8 +363,8 @@ app.get('/jobs', (req, res) => {
 </div>`;
 
   res.send(renderHTML({
-    title: `Canada Jobs — Page ${page} of ${totalPages.toLocaleString()} | CANOVA.ca`,
-    meta: `Browse ${TOTAL_JOBS.toLocaleString()} jobs in Canada. Page ${page}. Remote and on-site positions across all industries.`,
+    title: `Deutschland Jobs — Seite ${page} von ${totalPages.toLocaleString()} | DEJobs.de`,
+    meta: `Durchsuche ${TOTAL_JOBS.toLocaleString()} Jobs in Deutschland. Seite ${page}. Remote und Vor-Ort-Stellen in allen Branchen.`,
     bodyContent: body,
     schema: null
   }));
@@ -370,9 +375,9 @@ app.get('/jobs/:id', (req, res) => {
   const id = parseInt(req.params.id);
   if (!id || id < 1 || id > TOTAL_JOBS) {
     return res.status(404).send(renderHTML({
-      title: 'Job Not Found | CANOVA.ca',
-      meta: 'This job listing was not found.',
-      bodyContent: `<div class="container" style="text-align:center;padding:4rem 1.5rem"><h1>404 — Job Not Found</h1><p style="margin:1rem 0 2rem">This job may have been filled or removed.</p><a href="/jobs" style="color:#d62828">← Browse All Jobs</a></div>`,
+      title: 'Job Not Found | DEJobs.de',
+      meta: 'Diese Stellenanzeige wurde nicht gefunden.',
+      bodyContent: `<div class="container" style="text-align:center;padding:4rem 1.5rem"><h1>404 — Job nicht gefunden</h1><p style="margin:1rem 0 2rem">Diese Stelle wurde möglicherweise bereits besetzt oder entfernt.</p><a href="/jobs" style="color:#DD0000">← Alle Jobs durchsuchen</a></div>`,
       schema: null
     }));
   }
@@ -392,7 +397,7 @@ app.get('/jobs/:id', (req, res) => {
   <div class="card-title" style="font-size:.95rem">${rj.title}</div>
   <div class="card-company">${rj.company}</div>
   <div style="margin-top:.5rem;display:flex;gap:.5rem;flex-wrap:wrap">
-    <span class="badge ${rj.isRemote ? 'badge-remote' : 'badge-office'}" style="font-size:.7rem">${rj.isRemote ? '🌐 Remote' : '🏢 On-site'}</span>
+    <span class="badge ${rj.isRemote ? 'badge-remote' : 'badge-office'}" style="font-size:.7rem">${rj.isRemote ? '🌐 Remote' : '🏢 Vor Ort'}</span>
     <span class="badge badge-type" style="font-size:.7rem">${rj.jobType}</span>
   </div>
 </div>
@@ -401,7 +406,7 @@ app.get('/jobs/:id', (req, res) => {
   const body = `
 <div class="container">
   <div class="breadcrumb">
-    <a href="/">Home</a> › <a href="/jobs">Jobs</a> › <a href="/jobs?type=${job.isRemote ? 'remote' : 'onsite'}">${job.isRemote ? 'Remote' : 'On-site'}</a> › ${job.title}
+    <a href="/">Home</a> › <a href="/jobs">Jobs</a> › <a href="/jobs?type=${job.isRemote ? 'remote' : 'onsite'}">${job.isRemote ? 'Remote' : 'Vor Ort'}</a> › ${job.title}
   </div>
   <div class="job-detail">
     <div style="display:flex;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;gap:1rem">
@@ -410,8 +415,8 @@ app.get('/jobs/:id', (req, res) => {
         <p style="font-size:1.05rem;color:#555;margin-top:.35rem">${job.company} · ${job.industry}</p>
       </div>
       <div style="display:flex;flex-direction:column;align-items:flex-end;gap:.5rem">
-        <span class="badge ${job.isRemote ? 'badge-remote' : 'badge-office'}" style="font-size:.85rem;padding:.4rem 1rem">${job.isRemote ? '🌐 Remote' : '🏢 On-site'}</span>
-        <span style="font-size:.8rem;color:#888">Job ID: CA-${String(job.id).padStart(6, '0')}</span>
+        <span class="badge ${job.isRemote ? 'badge-remote' : 'badge-office'}" style="font-size:.85rem;padding:.4rem 1rem">${job.isRemote ? '🌐 Remote' : '🏢 Vor Ort'}</span>
+        <span style="font-size:.8rem;color:#888">Job ID: DE-${String(job.id).padStart(6, '0')}</span>
       </div>
     </div>
     <div class="detail-meta">
@@ -420,42 +425,43 @@ app.get('/jobs/:id', (req, res) => {
       <span class="detail-chip">💼 ${job.jobType}</span>
       <span class="detail-chip">📊 ${job.experience}</span>
       <span class="detail-chip">🏭 ${job.industry}</span>
-      <span class="detail-chip">📅 Posted: ${job.postedDate}</span>
+      <span class="detail-chip">📅 Veröffentlicht: ${job.postedDate}</span>
     </div>
     <div class="detail-body">${job.description}</div>
     <div class="apply-section">
-      <h3>Ready to Apply?</h3>
-      <p>Submit your application for <strong>${job.title}</strong> at <strong>${job.company}</strong> — takes less than 2 minutes</p>
+      <h3>Bereit zu bewerben?</h3>
+      <p>Reiche deine Bewerbung ein für <strong>${job.title}</strong> bei <strong>${job.company}</strong> — dauert weniger als 2 Minuten</p>
       <button class="btn-apply-big" onclick="openApply('${job.title.replace(/'/g, "\\'")} at ${job.company.replace(/'/g, "\\'")}')">
-        Apply Now →
+        Jetzt bewerben →
       </button>
     </div>
   </div>
 
   <div style="margin-top:2rem">
-    <h2 style="font-size:1.1rem;margin-bottom:1rem">Similar Jobs You Might Like</h2>
+    <h2 style="font-size:1.1rem;margin-bottom:1rem">Ähnliche Jobs, die dir gefallen könnten</h2>
     <div class="page-grid">${relatedCards}</div>
   </div>
   <div style="text-align:center;margin-top:1.5rem">
-    <a href="/jobs" style="color:#d62828;font-weight:600">← Browse All 100,000 Jobs</a>
+    <a href="/jobs" style="color:#DD0000;font-weight:600">← Alle 100,000 Jobs durchsuchen</a>
   </div>
 </div>`;
 
   res.send(renderHTML({
-    title: `${job.title} at ${job.company} — ${job.location} | CANOVA.ca`,
-    meta: `${job.title} job at ${job.company}. ${job.isRemote ? 'Remote' : job.location}. ${job.salary}. Apply now on CANOVA.ca.`,
+    title: `${job.title} bei ${job.company} — ${job.location} | DEJobs.de`,
+    meta: `${job.title} Stelle bei ${job.company}. ${job.isRemote ? 'Remote' : job.location}. ${job.salary}. Jetzt bewerben auf DEJobs.de.`,
     bodyContent: body,
     schema
   }));
 });
 
-// ── SITEMAP INDEX ─────────────────────────────────────────────────────────────
+// ─── SITEMAP INDEX ─────────────────────────────────────────────────────────────
 app.get('/sitemap.xml', (req, res) => {
+  const baseUrl = getBaseUrl(req);
   const totalSitemaps = 100;
   let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
   for (let i = 1; i <= totalSitemaps; i++) {
-    xml += `\n<sitemap><loc>https://rightwing-production.up.railway.app/sitemap-${i}.xml</loc></sitemap>`;
+    xml += `\n<sitemap><loc>${baseUrl}/sitemap-${i}.xml</loc></sitemap>`;
   }
   xml += `\n</sitemapindex>`;
   res.type('application/xml').send(xml);
@@ -463,72 +469,74 @@ app.get('/sitemap.xml', (req, res) => {
 
 app.get('/sitemap-:num.xml', (req, res) => {
   const num = parseInt(req.params.num);
+  const baseUrl = getBaseUrl(req);
   if (!num || num < 1 || num > 100) return res.status(404).send('Not found');
   const start = (num - 1) * 1000 + 1;
   const end = Math.min(num * 1000, TOTAL_JOBS);
   let xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`;
   for (let i = start; i <= end; i++) {
-    xml += `\n<url><loc>https://rightwing-production.up.railway.app/jobs/${i}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`;
+    xml += `\n<url><loc>${baseUrl}/jobs/${i}</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>`;
   }
   xml += `\n</urlset>`;
   res.type('application/xml').send(xml);
 });
 
-// ── SITEMAP HTML PAGE ─────────────────────────────────────────────────────────
+// ─── SITEMAP HTML PAGE ─────────────────────────────────────────────────────────
 app.get('/sitemap', (req, res) => {
   const body = `
 <div class="container">
-  <h1 style="margin-bottom:1rem">Sitemap — CANOVA.ca</h1>
-  <div class="info-box">📌 100,000 individual job pages + XML sitemaps for all search engines</div>
+  <h1 style="margin-bottom:1rem">Sitemap — DEJobs.de</h1>
+  <div class="info-box">📌 100,000 individuelle Jobseiten + XML-Sitemaps für alle Suchmaschinen</div>
   <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:1rem">
     <div class="job-card">
-      <div class="card-title">Main Pages</div>
+      <div class="card-title">Hauptseiten</div>
       <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem;font-size:.88rem">
-        <a href="/" style="color:#d62828">🏠 Home</a>
-        <a href="/jobs" style="color:#d62828">📋 All Jobs (100,000)</a>
-        <a href="/jobs?type=remote" style="color:#d62828">🌐 Remote Jobs (50,000)</a>
-        <a href="/jobs?type=onsite" style="color:#d62828">🏢 On-site Jobs (50,000)</a>
+        <a href="/" style="color:#DD0000">🏠 Home</a>
+        <a href="/jobs" style="color:#DD0000">📋 Alle Jobs (100,000)</a>
+        <a href="/jobs?type=remote" style="color:#DD0000">🌐 Remote Jobs (50,000)</a>
+        <a href="/jobs?type=onsite" style="color:#DD0000">🏢 Vor Ort Jobs (50,000)</a>
       </div>
     </div>
     <div class="job-card">
-      <div class="card-title">XML Sitemaps</div>
+      <div class="card-title">XML-Sitemaps</div>
       <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem;font-size:.88rem">
-        <a href="/sitemap.xml" style="color:#d62828">📄 Sitemap Index</a>
-        <a href="/sitemap-1.xml" style="color:#d62828">📄 Sitemap 1 (Jobs 1–1,000)</a>
-        <a href="/sitemap-2.xml" style="color:#d62828">📄 Sitemap 2 (Jobs 1,001–2,000)</a>
-        <span style="color:#888">… 100 sitemap files total</span>
+        <a href="/sitemap.xml" style="color:#DD0000">📄 Sitemap Index</a>
+        <a href="/sitemap-1.xml" style="color:#DD0000">📄 Sitemap 1 (Jobs 1–1,000)</a>
+        <a href="/sitemap-2.xml" style="color:#DD0000">📄 Sitemap 2 (Jobs 1,001–2,000)</a>
+        <span style="color:#888">… 100 Sitemap-Dateien insgesamt</span>
       </div>
     </div>
     <div class="job-card">
-      <div class="card-title">Job Pages Range</div>
+      <div class="card-title">Jobseiten Bereiche</div>
       <div style="display:flex;flex-direction:column;gap:.5rem;margin-top:.75rem;font-size:.88rem">
-        <a href="/jobs/1" style="color:#d62828">Job #1 (First Remote Job)</a>
-        <a href="/jobs/50000" style="color:#d62828">Job #50,000 (Last Remote Job)</a>
-        <a href="/jobs/50001" style="color:#d62828">Job #50,001 (First On-site Job)</a>
-        <a href="/jobs/100000" style="color:#d62828">Job #100,000 (Last On-site Job)</a>
+        <a href="/jobs/1" style="color:#DD0000">Job #1 (Erster Remote Job)</a>
+        <a href="/jobs/50000" style="color:#DD0000">Job #50,000 (Letzter Remote Job)</a>
+        <a href="/jobs/50001" style="color:#DD0000">Job #50,001 (Erster Vor Ort Job)</a>
+        <a href="/jobs/100000" style="color:#DD0000">Job #100,000 (Letzter Vor Ort Job)</a>
       </div>
     </div>
   </div>
 </div>`;
 
   res.send(renderHTML({
-    title: 'Sitemap | CANOVA.ca',
-    meta: 'Complete sitemap of CANOVA.ca with 100,000 job listings across Canada.',
+    title: 'Sitemap | DEJobs.de',
+    meta: 'Vollständige Sitemap von DEJobs.de mit 100,000 Stellenangeboten in ganz Deutschland.',
     bodyContent: body,
     schema: null
   }));
 });
 
-// ── ROBOTS.TXT ────────────────────────────────────────────────────────────────
+// ─── ROBOTS.TXT ────────────────────────────────────────────────────────────────
 app.get('/robots.txt', (req, res) => {
+  const baseUrl = getBaseUrl(req);
   res.type('text/plain').send(`User-agent: *
 Allow: /
-Sitemap: https://rightwing-production.up.railway.app/sitemap.xml
+Sitemap: ${baseUrl}/sitemap.xml
 Disallow: /api/`);
 });
 
-// ── API ─────────────────────────────────────────────────────────────────────
+// ─── API ─────────────────────────────────────────────────────────────────────
 app.get('/api/jobs/:id', (req, res) => {
   const id = parseInt(req.params.id);
   if (!id || id < 1 || id > TOTAL_JOBS) return res.status(404).json({ error: 'Job not found' });
@@ -547,9 +555,14 @@ app.get('/api/jobs', (req, res) => {
   res.json({ page, limit, total: TOTAL_JOBS, jobs });
 });
 
+// ─── HEALTHCHECK ──────────────────────────────────────────────────────────────
+app.get('/health', (req, res) => {
+  res.status(200).send('OK');
+});
+
 app.listen(PORT, () => {
-  console.log(`🇨🇦 CANOVA.ca running on port ${PORT}`);
+  console.log(`🇩🇪 DEJobs.de running on port ${PORT}`);
   console.log(`📋 ${TOTAL_JOBS.toLocaleString()} job pages ready`);
-  console.log(`🏢 ${companies.length} companies hiring in Canada`);
-  console.log(`📍 ${canadaLocations.length} locations across Canada`);
+  console.log(`🏢 ${companies.length} companies hiring in Germany`);
+  console.log(`📍 ${deLocations.length} locations across Germany`);
 });
