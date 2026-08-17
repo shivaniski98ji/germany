@@ -1,117 +1,151 @@
-// Job data generator - deterministically generates 100,000 jobs for Dubai/UAE
+// Job data generator - deterministically generates 100,000 jobs for Germany
 const TOTAL_JOBS = 100000;
 
 const jobTitles = [
-  "Software Engineer", "Frontend Developer", "Backend Developer", "Full Stack Developer",
-  "Data Analyst", "Data Scientist", "Machine Learning Engineer", "DevOps Engineer",
-  "Cloud Architect", "Mobile Developer", "Android Developer", "iOS Developer",
-  "Product Manager", "Project Manager", "Scrum Master", "Business Analyst",
-  "UI/UX Designer", "Graphic Designer", "Brand Designer", "Web Designer",
-  "Marketing Manager", "Digital Marketing Specialist", "SEO Specialist", "Content Writer",
-  "Copywriter", "Social Media Manager", "Community Manager", "Growth Hacker",
-  "Sales Manager", "Account Manager", "Business Development Manager", "Sales Executive",
-  "Financial Analyst", "Accountant", "Finance Manager", "Auditor",
-  "HR Manager", "HR Generalist", "Recruiter", "Talent Acquisition Specialist",
-  "Operations Manager", "Supply Chain Manager", "Logistics Coordinator", "Procurement Officer",
-  "Customer Success Manager", "Customer Support Specialist", "Technical Support Engineer",
-  "Network Engineer", "Cybersecurity Analyst", "Information Security Officer",
-  "Database Administrator", "Systems Administrator", "IT Manager", "CTO",
-  "Legal Counsel", "Compliance Officer", "Risk Manager", "Contract Manager",
-  "Healthcare Administrator", "Clinical Research Associate", "Pharmacist", "Nurse",
-  "Teacher", "Education Consultant", "Instructional Designer", "Training Manager",
-  "Civil Engineer", "Mechanical Engineer", "Electrical Engineer", "Structural Engineer",
-  "Architect", "Urban Planner", "Environmental Consultant", "Safety Officer",
-  "Real Estate Agent", "Property Manager", "Facilities Manager", "Construction Manager",
-  "Research Analyst", "Policy Analyst", "Communications Manager", "Public Relations Officer",
-  "Executive Assistant", "Administrative Officer", "Office Manager", "Receptionist",
+  "Softwareentwickler", "Frontend-Entwickler", "Backend-Entwickler", "Full Stack Entwickler",
+  "Datenanalyst", "Data Scientist", "Machine Learning Ingenieur", "DevOps Ingenieur",
+  "Cloud Architekt", "Mobile Entwickler", "Android Entwickler", "iOS Entwickler",
+  "Produktmanager", "Projektmanager", "Scrum Master", "Business Analyst","Data Entry","Customer Support",
+  "UI/UX Designer", "Grafikdesigner", "Brand Designer", "Webdesigner",
+  "Marketingmanager", "Digital Marketing Spezialist", "SEO Spezialist", "Content Writer",
+  "Texter", "Social Media Manager", "Community Manager", "Growth Hacker",
+  "Vertriebsleiter", "Account Manager", "Business Development Manager", "Vertriebsmitarbeiter",
+  "Finanzanalyst", "Buchhalter", "Finanzmanager", "Wirtschaftsprüfer",
+  "HR Manager", "HR Generalist", "Recruiter", "Talent Acquisition Spezialist",
+  "Operations Manager", "Supply Chain Manager", "Logistikkoordinator", "Beschaffungsbeauftragter",
+  "Customer Success Manager", "Kundensupport Spezialist", "Technical Support Ingenieur",
+  "Netzwerkingenieur", "Cybersecurity Analyst", "Informationssicherheitsbeauftragter",
+  "Datenbankadministrator", "Systemadministrator", "IT Manager", "CTO",
+  "Rechtsberater", "Compliance Beauftragter", "Risk Manager", "Vertragsmanager",
+  "Gesundheitsmanager", "Clinical Research Associate", "Apotheker", "Krankenschwester",
+  "Lehrer", "Bildungsberater", "Instructional Designer", "Trainingsmanager",
+  "Bauingenieur", "Maschinenbauingenieur", "Elektroingenieur", "Statiker",
+  "Architekt", "Stadtplaner", "Umweltberater", "Sicherheitsbeauftragter",
+  "Immobilienmakler", "Property Manager", "Facilities Manager", "Construction Manager",
+  "Forscher", "Policy Analyst", "Kommunikationsmanager", "Public Relations Officer",
+  "Assistent der Geschäftsleitung", "Verwaltungsbeauftragter", "Büroleiter", "Rezeptionist",
   "Video Editor", "Motion Graphics Designer", "Content Strategist", "Brand Manager",
-  "Partnerships Manager", "Customer Experience Manager", "Data Engineer", "BI Developer",
-  "Scrum Master", "Agile Coach", "Release Manager", "Site Reliability Engineer",
-  "Penetration Tester", "Cloud Engineer", "Platform Engineer", "API Developer",
-  "Hotel Manager", "Restaurant Manager", "Chef", "Sommelier", "Event Manager",
-  "Aviation Engineer", "Pilot", "Flight Attendant", "Airport Manager"
+  "Partnerschaftsmanager", "Customer Experience Manager", "Data Engineer", "BI Entwickler",
+  "Scrum Master", "Agile Coach", "Release Manager", "Site Reliability Engineer","Work From Home",
+  "Penetrationstester", "Cloud Engineer", "Platform Engineer", "API Entwickler",
+  "Hoteldirektor", "Restaurantleiter", "Koch", "Sommelier", "Eventmanager",
+  "Luftfahrtingenieur", "Pilot", "Flugbegleiter", "Flughafenmanager"
 ];
 
-// 75+ Dubai/UAE based companies + global companies with UAE presence
+// 75+ German companies + global companies with Germany presence
 const companies = [
-  // UAE/Dubai based
-  "Emirates Group", "Dubai Holding", "Emaar Properties", "DP World", "Dubai World",
-  "Abu Dhabi National Oil Company (ADNOC)", "Etihad Airways", "Flydubai", "Air Arabia",
-  "Al Habtoor Group", "Al Futtaim Group", "Dubai Islamic Bank", "Emirates NBD",
-  "Abu Dhabi Commercial Bank", "First Abu Dhabi Bank", "Mashreq Bank", "RAK Bank",
-  "Dubai Investments", "DAMAC Properties", "Nakheel", "Meraas", "Al Tayer Group",
-  "Jumeirah Group", "Atlantis The Palm", "Burj Al Arab", "Emirates Airlines",
+  // German companies
+  "Volkswagen AG", "BMW Group", "Mercedes-Benz Group", "Audi AG", "Porsche AG",
+  "Siemens AG", "Bosch", "SAP SE", "Deutsche Telekom", "Deutsche Bank",
+  "Allianz SE", "Munich Re", "DHL Group", "Deutsche Post", "Lufthansa Group",
+  "Adidas", "Puma", "Hugo Boss", "BASF SE", "Bayer AG",
+  "Continental AG", "Fresenius", "Henkel AG", "Zalando", "Delivery Hero",
+  "E.ON SE", "RWE AG", "EnBW", "Vattenfall", "Uniper",
+  "Commerzbank", "DZ Bank", "KfW", "Sparkassen", "Volksbanken",
+  "Rewe Group", "EDEKA", "Aldi", "Lidl", "Metro AG",
+  "ThyssenKrupp", "Daimler Truck", "MAN SE", "ZF Friedrichshafen", "Kuka",
+  "Deutsche Bahn", "Hamburg Port", "MSC", "HHLA", "Fraport",
+  "Deutsche Börse", "Europäische Zentralbank", "Bundesbank",
+  "Fraunhofer Gesellschaft", "Max-Planck-Gesellschaft", "Helmholtz","Remote Jobs",
+  "Charité", "UK Hamburg", "Universitätsklinikum Heidelberg",
+  "TU München", "HU Berlin", "RWTH Aachen", "KIT Karlsruhe",
   
-  // Global with UAE presence
-  "Google", "Amazon", "Microsoft", "Apple", "Meta", "Tesla", "Netflix",
-  "IBM", "Oracle", "Cisco", "Dell", "HP", "SAP", "Salesforce",
+  // Global with Germany presence
+  "Google Germany", "Amazon", "Microsoft", "Apple", "Meta", "Tesla", "Netflix",
+  "IBM", "Oracle", "Cisco", "Dell", "HP", "Salesforce",
   "Accenture", "Deloitte", "PwC", "KPMG", "EY", "McKinsey", "Boston Consulting Group",
-  "HSBC", "Standard Chartered", "Citi", "JPMorgan Chase", "Goldman Sachs",
+  "HSBC", "Citibank", "JPMorgan Chase", "Goldman Sachs",
   "Unilever", "P&G", "Nestle", "Coca-Cola", "PepsiCo",
-  "Shell", "BP", "TotalEnergies", "ExxonMobil", "Chevron",
-  "Siemens", "GE", "Schneider Electric", "ABB", "Honeywell",
-  "Boeing", "Airbus", "Rolls-Royce", "Lockheed Martin",
+  "Shell", "BP", "TotalEnergies", "ExxonMobil",
+  "GE", "Schneider Electric", "ABB", "Honeywell",
+  "Boeing", "Airbus", "Rolls-Royce",
   "Pfizer", "Novartis", "Roche", "GSK", "Johnson & Johnson",
   "Samsung", "LG", "Sony", "Panasonic", "Toshiba",
-  "Toyota", "Honda", "Nissan", "BMW", "Mercedes-Benz",
-  "LVMH", "Kering", "Chanel", "Gucci", "Rolex"
+  "Toyota", "Honda", "Nissan", "Hyundai"
 ];
 
-const dubaiLocations = [
-  // Dubai
-  "Downtown Dubai, Dubai", "Dubai Marina, Dubai", "Jumeirah, Dubai", "Business Bay, Dubai",
-  "Dubai Silicon Oasis, Dubai", "Dubai Internet City, Dubai", "Media City, Dubai",
-  "JLT (Jumeirah Lakes Towers), Dubai", "DIFC (Dubai International Financial Centre), Dubai",
-  "Al Barsha, Dubai", "Deira, Dubai", "Bur Dubai, Dubai", "Karama, Dubai",
-  "Al Satwa, Dubai", "Jebel Ali, Dubai", "Dubai South, Dubai", "Al Quoz, Dubai",
-  "Emirates Hills, Dubai", "Palm Jumeirah, Dubai", "The World Islands, Dubai",
-  "Al Wasl, Dubai", "Al Nahda, Dubai", "Mirdif, Dubai", "Al Warqa, Dubai",
-  "Al Garhoud, Dubai", "Oud Metha, Dubai", "Al Rigga, Dubai", "Al Raffa, Dubai",
+const deLocations = [
+  // Berlin
+  "Berlin-Mitte, Berlin", "Friedrichshain, Berlin", "Kreuzberg, Berlin", "Charlottenburg, Berlin",
+  "Prenzlauer Berg, Berlin", "Neukölln, Berlin", "Schöneberg, Berlin", "Tempelhof, Berlin",
+  "Steglitz, Berlin", "Spandau, Berlin", "Reinickendorf, Berlin", "Marzahn, Berlin",
+  "Lichtenberg, Berlin", "Treptow, Berlin", "Köpenick, Berlin",
   
-  // Abu Dhabi
-  "Abu Dhabi City, Abu Dhabi", "Al Reem Island, Abu Dhabi", "Yas Island, Abu Dhabi",
-  "Al Raha Beach, Abu Dhabi", "Khalifa City, Abu Dhabi", "Al Ain, Abu Dhabi",
-  "Saadiyat Island, Abu Dhabi", "Corniche, Abu Dhabi", "Al Maryah Island, Abu Dhabi",
-  "Mohamed Bin Zayed City, Abu Dhabi", "Mussafah, Abu Dhabi",
+  // Hamburg
+  "Hamburg-Mitte, Hamburg", "Altona, Hamburg", "Eimsbüttel, Hamburg", "Nord, Hamburg",
+  "Wandsbek, Hamburg", "Bergedorf, Hamburg", "Harburg, Hamburg",
   
-  // Sharjah
-  "Sharjah City, Sharjah", "Al Majaz, Sharjah", "Al Khan, Sharjah", "Al Nahda, Sharjah",
-  "Muwaileh, Sharjah", "Al Tai, Sharjah",
+  // Munich
+  "München-Mitte, Munich", "Schwabing, Munich", "Giesing, Munich", "Sendling, Munich",
+  "Neuhausen, Munich", "Pasing, Munich", "Berg am Laim, Munich", "Bogenhausen, Munich",
   
-  // Other Emirates
-  "Ajman City, Ajman", "Ras Al Khaimah, RAK", "Fujairah City, Fujairah",
-  "Umm Al Quwain, UAQ", "Al Jazirah, UAQ",
+  // Frankfurt
+  "Frankfurt-Innenstadt, Frankfurt", "Sachsenhausen, Frankfurt", "Bockenheim, Frankfurt",
+  "Ostend, Frankfurt", "Nordend, Frankfurt", "Westend, Frankfurt",
+  
+  // Cologne
+  "Köln-Altstadt, Cologne", "Ehrenfeld, Cologne", "Lindenthal, Cologne", "Mülheim, Cologne",
+  "Porz, Cologne", "Kalk, Cologne",
+  
+  // Stuttgart
+  "Stuttgart-Mitte, Stuttgart", "Bad Cannstatt, Stuttgart", "Vaihingen, Stuttgart",
+  "Zuffenhausen, Stuttgart", "Möhringen, Stuttgart",
+  
+  // Düsseldorf
+  "Düsseldorf-Altstadt, Düsseldorf", "Oberkassel, Düsseldorf", "Bilk, Düsseldorf",
+  "Flingern, Düsseldorf", "Gerresheim, Düsseldorf",
+  
+  // Leipzig
+  "Leipzig-Mitte, Leipzig", "Connewitz, Leipzig", "Plagwitz, Leipzig", "Reudnitz, Leipzig",
+  
+  // Dortmund
+  "Dortmund-Mitte, Dortmund", "Hörde, Dortmund", "Scharnhorst, Dortmund",
+  
+  // Essen
+  "Essen-Mitte, Essen", "Rüttenscheid, Essen", "Katernberg, Essen",
+  
+  // Bremen
+  "Bremen-Mitte, Bremen", "Findorff, Bremen", "Gröpelingen, Bremen", "Vegesack, Bremen",
+  
+  // Dresden
+  "Dresden-Altstadt, Dresden", "Neustadt, Dresden", "Blasewitz, Dresden",
+  
+  // Hannover
+  "Hannover-Mitte, Hannover", "Nordstadt, Hannover", "List, Hannover", "Laatzen, Hannover",
+  
+  // Nürnberg
+  "Nürnberg-Altstadt, Nürnberg", "Gostenhof, Nürnberg", "Südstadt, Nürnberg",
   
   // Remote
-  "Remote — UAE", "Remote — Dubai, UAE"
+  "Remote — Deutschland", "Remote — Berlin", "Remote — München", "Remote — Frankfurt"
 ];
 
 const salaryRanges = [
-  { display: "AED 5,000 – 8,000/month", min: 5000, max: 8000 },
-  { display: "AED 8,000 – 12,000/month", min: 8000, max: 12000 },
-  { display: "AED 12,000 – 18,000/month", min: 12000, max: 18000 },
-  { display: "AED 18,000 – 25,000/month", min: 18000, max: 25000 },
-  { display: "AED 25,000 – 35,000/month", min: 25000, max: 35000 },
-  { display: "AED 35,000 – 50,000/month", min: 35000, max: 50000 },
-  { display: "AED 50,000 – 75,000/month", min: 50000, max: 75000 },
-  { display: "AED 75,000 – 100,000/month", min: 75000, max: 100000 },
-  { display: "AED 100,000+/month", min: 100000, max: 150000 },
-  { display: "AED 3,000 – 5,000/month", min: 3000, max: 5000 }
+  { display: "€35,000 – €45,000/Jahr", min: 35000, max: 45000 },
+  { display: "€45,000 – €55,000/Jahr", min: 45000, max: 55000 },
+  { display: "€55,000 – €65,000/Jahr", min: 55000, max: 65000 },
+  { display: "€65,000 – €80,000/Jahr", min: 65000, max: 80000 },
+  { display: "€80,000 – €95,000/Jahr", min: 80000, max: 95000 },
+  { display: "€95,000 – €115,000/Jahr", min: 95000, max: 115000 },
+  { display: "€115,000 – €140,000/Jahr", min: 115000, max: 140000 },
+  { display: "€140,000 – €180,000/Jahr", min: 140000, max: 180000 },
+  { display: "€180,000 – €250,000/Jahr", min: 180000, max: 250000 },
+  { display: "€30,000 – €38,000/Jahr", min: 30000, max: 38000 }
 ];
 
 const jobTypes = ["FULL_TIME", "CONTRACTOR", "PART_TIME", "INTERN", "TEMPORARY"];
 const jobTypeDisplay = { 
-  "FULL_TIME": "Full-time", 
-  "CONTRACTOR": "Contract", 
-  "PART_TIME": "Part-time", 
-  "INTERN": "Internship", 
-  "TEMPORARY": "Temporary" 
+  "FULL_TIME": "Vollzeit", 
+  "CONTRACTOR": "Freiberufler", 
+  "PART_TIME": "Teilzeit", 
+  "INTERN": "Praktikum", 
+  "TEMPORARY": "Befristet" 
 };
 
 const experienceLevels = [
-  { display: "Entry Level", schema: "no requirements" },
-  { display: "Mid Level",   schema: "2 years experience" },
-  { display: "Senior Level",schema: "5 years experience" },
+  { display: "Einsteiger", schema: "no requirements" },
+  { display: "Mid-Level",   schema: "2 years experience" },
+  { display: "Senior",schema: "5 years experience" },
   { display: "Lead",        schema: "7 years experience" },
   { display: "Manager",     schema: "5 years experience" },
   { display: "Director",    schema: "8 years experience" },
@@ -119,87 +153,88 @@ const experienceLevels = [
 ];
 
 const industries = [
-  "Technology", "Fintech", "E-commerce", "Banking & Finance", "Oil & Gas",
-  "Real Estate", "Healthcare", "Education", "Consulting", "Aviation",
-  "Construction", "Logistics & Shipping", "Hospitality", "Retail", "Media & Entertainment",
-  "Renewable Energy", "Automotive", "Telecommunications", "Legal", "Government"
+  "Technologie", "Fintech", "E-Commerce", "Banken & Finanzen", "Automobilindustrie",
+  "Immobilien", "Gesundheitswesen", "Bildung", "Beratung", "Luftfahrt",
+  "Bauwesen", "Logistik & Versand", "Gastgewerbe", "Einzelhandel", "Medien & Unterhaltung",
+  "Erneuerbare Energien", "Telekommunikation", "Rechtswesen", "Öffentlicher Dienst",
+  "Chemieindustrie", "Pharmazie", "Maschinenbau", "Elektrotechnik"
 ];
 
 const jobDescriptions = [
-  (title, company, isRemote, location) => `We are seeking a talented ${title} to join the team at ${company} in Dubai. ${isRemote ? "This is a fully remote role open to qualified candidates across the UAE." : `This role is based in ${location}.`}
+  (title, company, isRemote, location) => `Wir suchen einen talentierten ${title} für das Team bei ${company} in Deutschland. ${isRemote ? "Dies ist eine vollständig remote Position, offen für qualifizierte Kandidaten in ganz Deutschland." : `Diese Position ist basiert in ${location}.`}
 
-You will be responsible for delivering high-quality work that drives business outcomes and contributes to ${company}'s growing operations in the UAE and Middle East region.
+Sie sind verantwortlich für qualitativ hochwertige Arbeit, die Geschäftsergebnisse fördert und zum wachsenden Geschäft von ${company} in Deutschland und Europa beiträgt.
 
-Key Responsibilities:
-• Lead and execute core ${title.toLowerCase()} functions across the organization
-• Collaborate with cross-functional teams to deliver on strategic objectives
-• Analyze data and provide actionable insights to improve performance
-• Mentor junior team members and contribute to knowledge sharing
-• Ensure best practices are followed in all deliverables
+Aufgaben:
+• Leitung und Durchführung von Kernfunktionen im Bereich ${title.toLowerCase()}
+• Zusammenarbeit mit funktionsübergreifenden Teams zur Erreichung strategischer Ziele
+• Datenanalyse und Bereitstellung umsetzbarer Erkenntnisse zur Leistungsverbesserung
+• Mentoring von Teammitgliedern und Beitrag zum Wissensaustausch
+• Sicherstellung von Best Practices in allen Ergebnissen
 
-Requirements:
-• 3–5 years of experience in a similar ${title.toLowerCase()} role
-• Strong communication and problem-solving skills
-• Experience working in fast-paced global tech/business environment
-• Bachelor's degree in a relevant field
-• Proficiency with modern tools and platforms
+Anforderungen:
+• 3–5 Jahre Erfahrung in einer ähnlichen Position als ${title.toLowerCase()}
+• Starke Kommunikations- und Problemlösungsfähigkeiten
+• Erfahrung in schnelllebigen globalen Tech-/Geschäftsumgebungen
+• Bachelor-Abschluss in einem relevanten Bereich
+• Kenntnisse moderner Tools und Plattformen
 
-What We Offer:
-• Competitive salary in AED
-• Health insurance for you and family
-• 30 days annual leave
-• Remote work allowance
-• Annual performance bonus
-• Professional development budget
-• Tax-free income in Dubai`,
+Wir bieten:
+• Wettbewerbsfähiges Gehalt in €
+• Krankenversicherung für Sie und Ihre Familie
+• 30 Tage Urlaub pro Jahr
+• Homeoffice-Zuschuss
+• Jährlicher Leistungsbonus
+• Weiterbildungsbudget
+• Steuerfreie Arbeit in Deutschland`,
 
-  (title, company, isRemote, location) => `${company} is hiring a ${title}! We are a leading company in Dubai looking for experienced professionals to scale our impact across the UAE and Middle East.
+  (title, company, isRemote, location) => `${company} sucht einen ${title}! Wir sind ein führendes Unternehmen in Deutschland auf der Suche nach erfahrenen Fachkräften, um unsere Wirkung in ganz Deutschland und Europa zu verstärken.
 
-${isRemote ? "This remote-first position allows you to work from anywhere in the UAE with flexible hours." : `You will work from our ${location} office with a dynamic, ambitious team.`}
+${isRemote ? "Diese remote-first Position ermöglicht es Ihnen, von überall in Deutschland mit flexiblen Arbeitszeiten zu arbeiten." : `Sie werden in unserem ${location} Büro mit einem dynamischen, ambitionierten Team arbeiten.`}
 
-About the Role:
-As a ${title} at ${company}, you will play a key role in shaping our products and services. You'll work closely with leadership and peers to execute on our mission in one of the world's fastest-growing economies.
+Über die Rolle:
+Als ${title} bei ${company} spielen Sie eine Schlüsselrolle bei der Gestaltung unserer Produkte und Dienstleistungen. Sie arbeiten eng mit der Geschäftsleitung und Kollegen zusammen, um unsere Mission in einer der größten Volkswirtschaften Europas umzusetzen.
 
-What You'll Do:
-• Drive key ${title.toLowerCase()} initiatives from planning to execution
-• Build and maintain relationships with key stakeholders
-• Report on KPIs and contribute to strategic planning
-• Stay updated on industry trends globally and in the UAE
-• Represent ${company} with professionalism and integrity
+Ihre Aufgaben:
+• Leitung von ${title.toLowerCase()}-Initiativen von der Planung bis zur Umsetzung
+• Aufbau und Pflege von Beziehungen zu wichtigen Stakeholdern
+• Berichterstattung über KPIs und Beitrag zur strategischen Planung
+• Aktualisierung über Branchentrends in Deutschland und Europa
+• Professionelle Repräsentation von ${company}
 
-What You Bring:
-• 2–6 years proven experience as a ${title.toLowerCase()}
-• Strong analytical and communication skills
-• Team player with a growth mindset
-• Relevant certification or degree preferred
+Ihr Profil:
+• 2–6 Jahre nachgewiesene Erfahrung als ${title.toLowerCase()}
+• Starke analytische und kommunikative Fähigkeiten
+• Teamplayer mit Growth-Mindset
+• Relevante Zertifizierung oder Studium bevorzugt
 
-Compensation & Benefits:
-• Competitive AED salary • Tax-free income • Health insurance • Annual leave (30 days) • Education allowance • Housing allowance (for eligible positions)`,
+Vergütung & Benefits:
+• Wettbewerbsfähiges Gehalt in € • Krankenversicherung • 30 Tage Urlaub • Bonus • Homeoffice-Möglichkeiten • Großartige Work-Life-Balance`,
 
-  (title, company, isRemote, location) => `Join ${company} as a ${title} and be part of one of Dubai's most exciting companies!
+  (title, company, isRemote, location) => `Werden Sie Teil von ${company} als ${title} und seien Sie Teil eines der aufregendsten Unternehmen Deutschlands!
 
-${isRemote ? "🌐 Remote | Work from anywhere in the UAE" : `📍 ${location}`}
+${isRemote ? "🌐 Remote | Arbeiten Sie von überall in Deutschland" : `📍 ${location}`}
 
-We're building the future of business in the Middle East and need exceptional talent like you. This is a rare opportunity to work with a world-class brand while enjoying the tax-free lifestyle of Dubai.
+Wir bauen die Zukunft des Geschäfts in Europa und brauchen außergewöhnliche Talente wie Sie. Dies ist eine seltene Gelegenheit, mit einer Weltmarke zu arbeiten und gleichzeitig den hohen Lebensstandard in Deutschland zu genießen.
 
-The Opportunity:
-You'll be taking on the ${title} role at a critical growth stage. Your work will directly impact millions of customers across the region.
+Die Chance:
+Sie übernehmen die ${title}-Rolle in einer entscheidenden Wachstumsphase. Ihre Arbeit wird sich direkt auf Millionen von Kunden in der Region auswirken.
 
-Day-to-Day Responsibilities:
-• Execute and improve key workflows within the ${title.toLowerCase()} function
-• Collaborate with product, engineering, and business teams
-• Track metrics and optimize for performance
-• Contribute to a culture of excellence and innovation
-• Support senior leadership with reporting and strategy
+Ihre Aufgaben:
+• Umsetzung und Verbesserung von Kernabläufen im ${title.toLowerCase()}-Bereich
+• Zusammenarbeit mit Produkt-, Entwicklungs- und Business-Teams
+• Überwachung von Kennzahlen und Optimierung der Leistung
+• Beitrag zu einer Kultur der Exzellenz und Innovation
+• Unterstützung der Geschäftsleitung bei Berichterstattung und Strategie
 
-Your Profile:
-• 3+ years in ${title.toLowerCase()} or related field
-• Comfortable in a fast-moving global business ecosystem
-• Strong interpersonal skills and professional work ethic
-• Degree in relevant discipline (Master's is a plus)
+Ihr Profil:
+• 3+ Jahre Erfahrung im ${title.toLowerCase()} oder einem verwandten Bereich
+• Souveränität in schnelllebigen globalen Geschäftsökosystemen
+• Starke zwischenmenschliche Fähigkeiten und professionelle Arbeitsethik
+• Studium in relevantem Fachbereich (Master ist ein Plus)
 
-Perks at ${company}:
-Tax-free salary | Health insurance | Housing allowance (optional) | Annual flight allowance | Education allowance | 30 days leave | Performance bonus | Learning budget | Gym membership`
+Benefits bei ${company}:
+Attraktives Gehalt | Krankenversicherung | 30 Tage Urlaub | Leistungsbonus | Weiterbildungsbudget | Flexible Arbeitszeiten | Hervorragende Work-Life-Balance in Deutschland`
 ];
 
 function seededRandom(seed) {
@@ -216,7 +251,7 @@ function getJobData(id) {
   const companyIndex = Math.floor((id - 1) / Math.ceil(TOTAL_JOBS / companies.length)) % companies.length;
 
   const titleIndex   = Math.floor(r(1) * jobTitles.length);
-  const locationIndex= Math.floor(r(3) * dubaiLocations.length);
+  const locationIndex= Math.floor(r(3) * deLocations.length);
   const salaryIndex  = Math.floor(r(4) * salaryRanges.length);
   const jobTypeIndex = Math.floor(r(5) * jobTypes.length);
   const expIndex     = Math.floor(r(6) * experienceLevels.length);
@@ -225,12 +260,12 @@ function getJobData(id) {
 
   const title    = jobTitles[titleIndex];
   const company  = companies[companyIndex];
-  const location = isRemote ? "Remote — UAE" : dubaiLocations[locationIndex];
+  const location = isRemote ? "Remote — Deutschland" : deLocations[locationIndex];
   const salary   = salaryRanges[salaryIndex];
   const jobType  = jobTypes[jobTypeIndex];
   const exp      = experienceLevels[expIndex];
   const industry = industries[industryIndex];
-  const description = jobDescriptions[descIndex](title, company, isRemote, dubaiLocations[locationIndex]);
+  const description = jobDescriptions[descIndex](title, company, isRemote, deLocations[locationIndex]);
 
   const daysAgo = Math.floor(r(9) * 60);
   const postedDate = new Date();
@@ -268,7 +303,7 @@ function getJobSchema(job) {
     "identifier": {
       "@type": "PropertyValue",
       "name": job.company,
-      "value": `JOB-AE-${String(job.id).padStart(6, '0')}`
+      "value": `JOB-DE-${String(job.id).padStart(6, '0')}`
     },
     "datePosted": job.postedDate,
     "validThrough": `${job.validThrough}T00:00:00Z`,
@@ -282,22 +317,22 @@ function getJobSchema(job) {
       "@type": "Place",
       "address": {
         "@type": "PostalAddress",
-        "addressLocality": job.isRemote ? "Dubai" : job.location.split(',')[0],
-        "addressCountry": "AE"
+        "addressLocality": job.isRemote ? "Berlin" : job.location.split(',')[0],
+        "addressCountry": "DE"
       }
     },
     "applicantLocationRequirements": {
       "@type": "Country",
-      "name": "United Arab Emirates"
+      "name": "Germany"
     },
     "baseSalary": {
       "@type": "MonetaryAmount",
-      "currency": "AED",
+      "currency": "EUR",
       "value": {
         "@type": "QuantitativeValue",
         "minValue": job.salaryMin,
         "maxValue": job.salaryMax,
-        "unitText": "MONTH"
+        "unitText": "YEAR"
       }
     },
     "experienceRequirements": {
@@ -317,4 +352,4 @@ function getJobSchema(job) {
   return schema;
 }
 
-module.exports = { getJobData, getJobSchema, TOTAL_JOBS, jobTitles, companies, dubaiLocations, industries };
+module.exports = { getJobData, getJobSchema, TOTAL_JOBS, jobTitles, companies, deLocations, industries };
